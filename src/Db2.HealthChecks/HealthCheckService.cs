@@ -12,7 +12,7 @@ internal class Db2HealthCheckService : IHealthCheck
     private readonly string _query;
 
     public Db2HealthCheckService(string connectionString, string query, IServiceProvider serviceProvider)
-    {
+    {  
         _connectionString = connectionString;
         _query = query;
         _serviceProvider = serviceProvider;
