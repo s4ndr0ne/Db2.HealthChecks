@@ -24,4 +24,8 @@
       Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
   </ItemGroup>
 
+   <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>
