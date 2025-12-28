@@ -31,25 +31,25 @@ public class Program
 
         var serviceProvider = services.BuildServiceProvider();
 
-        // Ottieni il servizio di HealthCheck
+        // Retrieve the HealthCheckService
         var healthCheckService = serviceProvider.GetRequiredService<HealthCheckService>();
 
-        Console.WriteLine("Esecuzione Health Check...");
+        Console.WriteLine("Executing Health Check...");
 
-        // Esegui il controllo
+        // Execute the health check
         var report = await healthCheckService.CheckHealthAsync();
 
-        // Stampa i risultati
-        Console.WriteLine($"Stato Complessivo: {report.Status}");
+        // Print the results
+        Console.WriteLine($"Overall Status: {report.Status}");
         
         foreach (var entry in report.Entries)
         {
             Console.WriteLine($"Check: {entry.Key}");
-            Console.WriteLine($" - Stato: {entry.Value.Status}");
-            Console.WriteLine($" - Descrizione: {entry.Value.Description}");
+            Console.WriteLine($" - Status: {entry.Value.Status}");
+            Console.WriteLine($" - Description: {entry.Value.Description}");
             if (entry.Value.Exception != null)
             {
-                Console.WriteLine($" - Errore: {entry.Value.Exception.Message}");
+                Console.WriteLine($" - Error: {entry.Value.Exception.Message}");
             }
         }
     }

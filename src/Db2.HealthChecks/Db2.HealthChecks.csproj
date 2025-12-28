@@ -4,6 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>s4ndr0ne.Db2.HealthChecks</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>s4ndr0ne</Authors>
+    <Description>Db2 health check implementation for .NET</Description>
+    <RepositoryUrl>https://github.com/s4ndr0ne/Db2.HealthChecks</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>db2, healthcheck, .net8</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
