@@ -5,12 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>s4ndr0ne.Db2.HealthChecks</PackageId>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <Authors>s4ndr0ne</Authors>
     <Description>Db2 health check implementation for .NET</Description>
     <RepositoryUrl>https://github.com/s4ndr0ne/Db2.HealthChecks</RepositoryUrl> 
     <RepositoryType>git</RepositoryType>
-    <PackageTags>db2, healthcheck, .net8</PackageTags>
+    <PackageTags>db2, healthcheck, .net10</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.4" />
-    <PackageReference Include="Net.IBM.Data.Db2" Version="8.0.0.500" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+    <PackageReference Include="Net.IBM.Data.Db2" Version="9.0.0.400" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
     <PackageReference Include="Net.IBM.Data.Db2-lnx" Version="9.0.0.400" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
   </ItemGroup>
 
