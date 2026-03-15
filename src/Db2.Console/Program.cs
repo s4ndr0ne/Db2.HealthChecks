@@ -10,6 +10,8 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
+        System.Environment.SetEnvironmentVariable("DOCKER_API_VERSION", "1.41");
+        System.Environment.SetEnvironmentVariable("DOCKER_CLIENT_VERSION", "1.41");
         var db2Container = new Db2Builder()
             .WithDatabase("testdb")
             .WithUsername("db2admin")
