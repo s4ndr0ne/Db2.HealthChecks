@@ -1,29 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
     <PackageId>s4ndr0ne.Db2.HealthChecks</PackageId>
-    <Version>0.0.2</Version>
+    <Version>0.1.0</Version>
     <Authors>s4ndr0ne</Authors>
-    <Description>Db2 health check implementation for .NET</Description>
-    <RepositoryUrl>https://github.com/s4ndr0ne/Db2.HealthChecks</RepositoryUrl> 
+    <Description>Enterprise-ready IBM Db2 health check implementation for Microsoft.Extensions.Diagnostics.HealthChecks.</Description>
+    <RepositoryUrl>https://github.com/s4ndr0ne/Db2.HealthChecks</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>db2, healthcheck, .net10</PackageTags>
+    <PackageProjectUrl>https://github.com/s4ndr0ne/Db2.HealthChecks</PackageProjectUrl>
+    <PackageTags>db2;healthchecks;healthcheck;dotnet;aspnetcore;netstandard</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>Cross-platform packaging, netstandard2.0/net8.0/net10.0 support, configurable options, timeout support, provider/factory-based connection creation, logging, and improved diagnostics.</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.4" />
-    <PackageReference Include="Net.IBM.Data.Db2" Version="9.0.0.400" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
-    <PackageReference Include="Net.IBM.Data.Db2-lnx" Version="9.0.0.400" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.4" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
-   <ItemGroup>
+  <ItemGroup>
     <None Include="../../LICENSE" Pack="true" PackagePath="" />
     <None Include="../../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
