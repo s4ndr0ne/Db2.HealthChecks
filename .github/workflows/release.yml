@@ -40,7 +40,7 @@ jobs:
         run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build -o ./artifacts -p:ContinuousIntegrationBuild=true
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             ./artifacts/*.nupkg
