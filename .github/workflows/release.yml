@@ -36,6 +36,18 @@ jobs:
       - name: Install Db2 client native dependencies
         run: sudo apt-get update && sudo apt-get install -y libxml2 libaio1t64
 
+      - name: Configure Db2 native client library path
+        shell: bash
+        run: |
+          set -euo pipefail
+          CLI_LIB_DIR="$GITHUB_WORKSPACE/src/Db2.Test/bin/Release/net10.0/clidriver/lib"
+          if [ ! -f "$CLI_LIB_DIR/libdb2.so" ]; then
+            echo "::error::Db2 clidriver not found in test output. Expected $CLI_LIB_DIR/libdb2.so"
+            exit 1
+          fi
+          echo "LD_LIBRARY_PATH=$CLI_LIB_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+          echo "Db2 clidriver configured at $CLI_LIB_DIR"
+
       - name: Test
         run: dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
         env:
