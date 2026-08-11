@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## 0.1.0
+## 1.0.0
 
 - Removed OS-conditional IBM provider references from the library package.
 - Added `netstandard2.0` + `net8.0` + `net10.0` multi-targeting.

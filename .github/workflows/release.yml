@@ -33,11 +33,22 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore -p:ContinuousIntegrationBuild=true
 
+      - name: Install Db2 client native dependencies
+        run: sudo apt-get update && sudo apt-get install -y libxml2 libaio1t64
+
       - name: Test
         run: dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        env:
+          RUN_DB2_INTEGRATION_TESTS: true
 
       - name: Pack
         run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build -o ./artifacts -p:ContinuousIntegrationBuild=true
+
+      - name: Check vulnerable packages
+        run: dotnet list package --vulnerable --include-transitive
+
+      - name: Verify public API baseline
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --no-incremental
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

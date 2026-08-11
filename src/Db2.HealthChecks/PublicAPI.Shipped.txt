@@ -1,0 +1,33 @@
+#nullable enable
+const Db2.HealthChecks.Db2HealthCheckOptions.DefaultQuery = "SELECT 1 FROM SYSIBM.SYSDUMMY1" -> string!
+Db2.HealthChecks.Db2HealthCheckOptions
+Db2.HealthChecks.Db2HealthCheckOptions.CommandTimeoutSeconds.get -> int?
+Db2.HealthChecks.Db2HealthCheckOptions.CommandTimeoutSeconds.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.ConnectionFactory.get -> System.Func<System.IServiceProvider!, System.Data.Common.DbConnection!>?
+Db2.HealthChecks.Db2HealthCheckOptions.ConnectionFactory.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.ConnectionString.get -> string?
+Db2.HealthChecks.Db2HealthCheckOptions.ConnectionString.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.Db2HealthCheckOptions() -> void
+Db2.HealthChecks.Db2HealthCheckOptions.DisposeConnection.get -> bool
+Db2.HealthChecks.Db2HealthCheckOptions.DisposeConnection.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.FailureStatus.get -> Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus
+Db2.HealthChecks.Db2HealthCheckOptions.FailureStatus.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.HealthyDescription.get -> string!
+Db2.HealthChecks.Db2HealthCheckOptions.HealthyDescription.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.IncludeExceptionDetails.get -> bool
+Db2.HealthChecks.Db2HealthCheckOptions.IncludeExceptionDetails.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.ProviderFactory.get -> System.Data.Common.DbProviderFactory?
+Db2.HealthChecks.Db2HealthCheckOptions.ProviderFactory.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.ProviderInvariantName.get -> string!
+Db2.HealthChecks.Db2HealthCheckOptions.ProviderInvariantName.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.Query.get -> string!
+Db2.HealthChecks.Db2HealthCheckOptions.Query.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.Tags.get -> System.Collections.Generic.IEnumerable<string!>!
+Db2.HealthChecks.Db2HealthCheckOptions.Tags.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.Timeout.get -> System.TimeSpan
+Db2.HealthChecks.Db2HealthCheckOptions.Timeout.set -> void
+Db2.HealthChecks.Db2HealthCheckOptions.UnhealthyDescription.get -> string!
+Db2.HealthChecks.Db2HealthCheckOptions.UnhealthyDescription.set -> void
+Db2.HealthChecks.HealthChecksExtensions
+static Db2.HealthChecks.HealthChecksExtensions.AddDb2Check(this Microsoft.Extensions.DependencyInjection.IHealthChecksBuilder! builder, string! name, string! connectionString, string! query = "SELECT 1 FROM SYSIBM.SYSDUMMY1", string![]? tags = null, Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus? failureStatus = null, System.TimeSpan? timeout = null, int? commandTimeoutSeconds = 5) -> Microsoft.Extensions.DependencyInjection.IHealthChecksBuilder!
+static Db2.HealthChecks.HealthChecksExtensions.AddDb2Check(this Microsoft.Extensions.DependencyInjection.IHealthChecksBuilder! builder, string! name, System.Action<Db2.HealthChecks.Db2HealthCheckOptions!>! configureOptions, Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus? failureStatus = null, System.Collections.Generic.IEnumerable<string!>? tags = null) -> Microsoft.Extensions.DependencyInjection.IHealthChecksBuilder!
