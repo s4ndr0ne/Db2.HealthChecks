@@ -86,6 +86,67 @@ public class Db2HealthChecksExtensionsTests
         Assert.Contains("ConnectionString", exception.Message);
     }
 
+    [Fact]
+    public async Task AddDb2Check_DoesNotExposeExceptionDetailsByDefault()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddHealthChecks()
+            .AddDb2Check("db2", options =>
+            {
+                options.ConnectionFactory = _ => new FailingDbConnection();
+            });
+
+        await using var provider = services.BuildServiceProvider();
+        var report = await provider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
+
+        Assert.Equal(HealthStatus.Unhealthy, report.Entries["db2"].Status);
+        Assert.Null(report.Entries["db2"].Exception);
+    }
+
+    [Fact]
+    public async Task AddDb2Check_AppliesQueryAndCommandTimeout()
+    {
+        var connection = new SuccessfulDbConnection();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddHealthChecks()
+            .AddDb2Check("db2", options =>
+            {
+                options.ConnectionFactory = _ => connection;
+                options.Query = "SELECT 42";
+                options.CommandTimeoutSeconds = 7;
+            });
+
+        await using var provider = services.BuildServiceProvider();
+        var report = await provider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
+
+        Assert.Equal(HealthStatus.Healthy, report.Status);
+        Assert.Equal("SELECT 42", connection.LastCommandText);
+        Assert.Equal(7, connection.LastCommandTimeout);
+    }
+
+    [Fact]
+    public async Task AddDb2Check_TimesOutAndDisposesConnection()
+    {
+        var connection = new BlockingDbConnection();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddHealthChecks()
+            .AddDb2Check("db2", options =>
+            {
+                options.ConnectionFactory = _ => connection;
+                options.Timeout = TimeSpan.FromMilliseconds(20);
+            });
+
+        await using var provider = services.BuildServiceProvider();
+        var report = await provider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
+
+        Assert.Equal(HealthStatus.Unhealthy, report.Status);
+        Assert.Contains("Timed out", report.Entries["db2"].Description);
+        Assert.True(connection.WasDisposed);
+    }
+
 #pragma warning disable CS8764, CS8765 // Test doubles intentionally implement BCL provider contracts across TFMs.
     private class SuccessfulDbConnection : DbConnection
     {
@@ -96,6 +157,8 @@ public class Db2HealthChecksExtensionsTests
         public override string DataSource => "test";
         public override string ServerVersion => "1.0";
         public override ConnectionState State => _state;
+        public string? LastCommandText { get; private set; }
+        public int LastCommandTimeout { get; private set; }
 
         public override Task OpenAsync(CancellationToken cancellationToken)
         {
@@ -107,7 +170,21 @@ public class Db2HealthChecksExtensionsTests
         public override void Close() => _state = ConnectionState.Closed;
         public override void ChangeDatabase(string databaseName) { }
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel) => throw new NotSupportedException();
-        protected override DbCommand CreateDbCommand() => new SuccessfulDbCommand();
+        protected override DbCommand CreateDbCommand() => new SuccessfulDbCommand(this);
+
+        internal void RecordCommand(SuccessfulDbCommand command)
+        {
+            LastCommandText = command.CommandText;
+            LastCommandTimeout = command.CommandTimeout;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            WasDisposed = true;
+            base.Dispose(disposing);
+        }
+
+        public bool WasDisposed { get; private set; }
     }
 
     private sealed class FailingDbConnection : SuccessfulDbConnection
@@ -118,6 +195,9 @@ public class Db2HealthChecksExtensionsTests
 
     private sealed class SuccessfulDbCommand : DbCommand
     {
+        private readonly SuccessfulDbConnection _connection;
+
+        public SuccessfulDbCommand(SuccessfulDbConnection connection) => _connection = connection;
         public override string? CommandText { get; set; } = string.Empty;
         public override int CommandTimeout { get; set; }
         public override CommandType CommandType { get; set; }
@@ -129,10 +209,22 @@ public class Db2HealthChecksExtensionsTests
 
         public override void Cancel() { }
         public override int ExecuteNonQuery() => 1;
-        public override object ExecuteScalar() => 1;
+        public override object ExecuteScalar()
+        {
+            _connection.RecordCommand(this);
+            return 1;
+        }
         public override void Prepare() { }
         protected override DbParameter CreateDbParameter() => throw new NotSupportedException();
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior) => throw new NotSupportedException();
+    }
+
+    private sealed class BlockingDbConnection : SuccessfulDbConnection
+    {
+        public override async Task OpenAsync(CancellationToken cancellationToken)
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        }
     }
 
     private sealed class EmptyDbParameterCollection : DbParameterCollection

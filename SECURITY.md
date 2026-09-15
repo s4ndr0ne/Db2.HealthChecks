@@ -1,18 +1,12 @@
 # Security Policy
 
-## Supported versions
-
-Security fixes are provided for the latest released minor version.
-
 ## Reporting a vulnerability
 
-Please report security issues privately through GitHub Security Advisories when available, or contact the maintainer directly.
+Do not open a public issue for a suspected vulnerability. Report it privately to the repository
+maintainers through GitHub security advisories.
 
-Do not open public issues containing credentials, connection strings, stack traces with secrets, or exploit details.
+Include the affected version, target framework, provider package and a minimal reproduction when
+possible. Do not include real connection strings, passwords, tokens or production data.
 
-## Operational guidance
-
-- Never expose health check details publicly unless authenticated and authorized.
-- Do not log Db2 connection strings or credentials.
-- Prefer secret stores such as Azure Key Vault, Kubernetes Secrets, or equivalent enterprise secret managers.
-- Use short health check timeouts to avoid cascading failures.
+Health-check endpoints should normally be protected and should not expose exception details. The
+library defaults `IncludeExceptionDetails` to `false` for this reason.

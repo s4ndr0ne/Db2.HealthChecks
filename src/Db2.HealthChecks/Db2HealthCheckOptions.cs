@@ -56,7 +56,7 @@ public sealed class Db2HealthCheckOptions
     /// <summary>
     /// Include the caught exception in HealthCheckResult. Disable for endpoints where details may be exposed.
     /// </summary>
-    public bool IncludeExceptionDetails { get; set; } = true;
+    public bool IncludeExceptionDetails { get; set; }
 
     /// <summary>
     /// Disposes the DbConnection after each health check. Keep true unless the factory returns an externally owned connection.

@@ -126,6 +126,13 @@ options.IncludeExceptionDetails = false;
 - `netstandard2.0` target: supports factory/reflection-based connection creation. `DbProviderFactories.GetFactory` is only used on targets where it is available.
 - `net8.0` and `net10.0` targets: support `DbProviderFactories.GetFactory` with `ProviderInvariantName` as well as explicit factories.
 - A `DbConnection` returned by `ConnectionFactory` is disposed after every check by default. Set `DisposeConnection = false` only when returning an externally owned connection.
+- `IncludeExceptionDetails` defaults to `false`; enable it only on protected diagnostics endpoints.
+
+The library deliberately does not bundle an IBM Db2 driver. Install the provider selected by the
+consuming application, such as `Net.IBM.Data.Db2` on Windows or `Net.IBM.Data.Db2-lnx` on Linux.
+The provider can be registered with `DbProviderFactories`, supplied through `ProviderFactory`, or
+used by a custom `ConnectionFactory`. This keeps IBM driver versions, native dependencies, and
+licensing under application control.
 
 ## Development
 

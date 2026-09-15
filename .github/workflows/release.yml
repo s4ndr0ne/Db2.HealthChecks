@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
 
@@ -33,14 +33,37 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore -p:ContinuousIntegrationBuild=true
 
+      - name: Install Db2 client native dependencies
+        run: sudo apt-get update && sudo apt-get install -y libxml2 libaio1t64
+
+      - name: Configure Db2 native client library path
+        shell: bash
+        run: |
+          set -euo pipefail
+          CLI_LIB_DIR="$GITHUB_WORKSPACE/src/Db2.Test/bin/Release/net10.0/clidriver/lib"
+          if [ ! -f "$CLI_LIB_DIR/libdb2.so" ]; then
+            echo "::error::Db2 clidriver not found in test output. Expected $CLI_LIB_DIR/libdb2.so"
+            exit 1
+          fi
+          echo "LD_LIBRARY_PATH=$CLI_LIB_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+          echo "Db2 clidriver configured at $CLI_LIB_DIR"
+
       - name: Test
         run: dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        env:
+          RUN_DB2_INTEGRATION_TESTS: true
 
       - name: Pack
         run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build -o ./artifacts -p:ContinuousIntegrationBuild=true
 
+      - name: Check vulnerable packages
+        run: dotnet list package --vulnerable --include-transitive
+
+      - name: Verify public API baseline
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --no-incremental
+
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             ./artifacts/*.nupkg
