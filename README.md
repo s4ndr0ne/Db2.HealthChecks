@@ -143,6 +143,9 @@ dotnet test
 dotnet pack src/Db2.HealthChecks/Db2.HealthChecks.csproj -c Release
 ```
 
+The test project runs on .NET 8 and .NET 10; solution builds also compile the library's
+`netstandard2.0` target. The console sample is under `samples/Db2.HealthChecks.Console`.
+
 ## Security
 
 Do not log or expose Db2 connection strings. See `SECURITY.md` for vulnerability reporting.

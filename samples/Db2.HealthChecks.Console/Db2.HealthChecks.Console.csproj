@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Db2.HealthChecks\Db2.HealthChecks.csproj" />
+    <ProjectReference Include="..\..\src\Db2.HealthChecks\Db2.HealthChecks.csproj" />
   </ItemGroup>
 
   <ItemGroup>

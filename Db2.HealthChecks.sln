@@ -5,11 +5,15 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db2.HealthChecks", "src\Db2.HealthChecks\Db2.HealthChecks.csproj", "{B30B4579-B038-BBCC-E540-625FFE752239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db2.Console", "src\Db2.Console\Db2.Console.csproj", "{0841460E-6182-4C19-B0C6-5A6904D99308}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db2.HealthChecks.Console", "samples\Db2.HealthChecks.Console\Db2.HealthChecks.Console.csproj", "{0841460E-6182-4C19-B0C6-5A6904D99308}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db2.Test", "src\Db2.Test\Db2.Test.csproj", "{EEFF4FEB-5571-46AE-A835-5EAB8B26138E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db2.HealthChecks.Tests", "tests\Db2.HealthChecks.Tests\Db2.HealthChecks.Tests.csproj", "{EEFF4FEB-5571-46AE-A835-5EAB8B26138E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65A398F0-A263-4A1C-9675-142035ED3E09}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{F284A5AF-9A5E-4C42-8B4F-95B76D0B4EF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,7 +66,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EEFF4FEB-5571-46AE-A835-5EAB8B26138E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{B30B4579-B038-BBCC-E540-625FFE752239} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{EEFF4FEB-5571-46AE-A835-5EAB8B26138E} = {65A398F0-A263-4A1C-9675-142035ED3E09}
+		{0841460E-6182-4C19-B0C6-5A6904D99308} = {F284A5AF-9A5E-4C42-8B4F-95B76D0B4EF4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9D3566C-D88F-4A26-95FE-05CE8EB0A11D}

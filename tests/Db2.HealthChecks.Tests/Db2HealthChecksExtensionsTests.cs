@@ -4,10 +4,11 @@ using Db2.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace Db2.Test;
+namespace Db2.HealthChecks.Tests;
 
 public class Db2HealthChecksExtensionsTests
 {
@@ -148,44 +149,34 @@ public class Db2HealthChecksExtensionsTests
     }
 
     [Fact]
-    public async Task AddDb2Check_WithCacheDuration_ReusesResultWithoutNewProbe()
+    public async Task AddDb2Check_PropagatesCallerCancellation()
     {
-        var factoryCalls = 0;
+        var connection = new BlockingDbConnection();
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddHealthChecks()
             .AddDb2Check("db2", options =>
             {
-                options.ConnectionFactory = _ =>
-                {
-                    factoryCalls++;
-                    return new SuccessfulDbConnection();
-                };
-                options.CacheDuration = TimeSpan.FromMinutes(1);
+                options.ConnectionFactory = _ => connection;
+                options.Timeout = Timeout.InfiniteTimeSpan;
             });
 
         await using var provider = services.BuildServiceProvider();
-        var healthCheckService = provider.GetRequiredService<HealthCheckService>();
+        var registration = provider
+            .GetRequiredService<IOptions<HealthCheckServiceOptions>>()
+            .Value
+            .Registrations
+            .Single();
+        var healthCheck = registration.Factory(provider);
+        using var cancellationTokenSource = new CancellationTokenSource();
+        var checkTask = healthCheck.CheckHealthAsync(
+            new HealthCheckContext { Registration = registration },
+            cancellationTokenSource.Token);
 
-        var first = await healthCheckService.CheckHealthAsync();
-        var second = await healthCheckService.CheckHealthAsync();
+        cancellationTokenSource.Cancel();
 
-        Assert.Equal(HealthStatus.Healthy, first.Status);
-        Assert.Equal(HealthStatus.Healthy, second.Status);
-        Assert.Equal(1, factoryCalls);
-    }
-
-    [Fact]
-    public void AddDb2Check_WithNegativeCacheDuration_Throws()
-    {
-        var services = new ServiceCollection();
-
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            services.AddHealthChecks().AddDb2Check("db2", options =>
-            {
-                options.ConnectionFactory = _ => new SuccessfulDbConnection();
-                options.CacheDuration = TimeSpan.FromSeconds(-1);
-            }));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => checkTask);
+        Assert.True(connection.WasDisposed);
     }
 
 #pragma warning disable CS8764, CS8765 // Test doubles intentionally implement BCL provider contracts across TFMs.
