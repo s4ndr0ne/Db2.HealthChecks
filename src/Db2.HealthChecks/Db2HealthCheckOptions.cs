@@ -78,6 +78,14 @@ public sealed class Db2HealthCheckOptions
     /// </summary>
     public string ProviderInvariantName { get; set; } = "IBM.Data.Db2";
 
+    /// <summary>
+    /// Minimum interval between real Db2 probes. When greater than <see cref="TimeSpan.Zero" />,
+    /// successful and failed results are cached and reused without opening a new connection.
+    /// Use this to avoid overloading Db2 when probes are frequent (for example Kubernetes
+    /// readiness probes every few seconds across many replicas). Default is <see cref="TimeSpan.Zero" /> (disabled).
+    /// </summary>
+    public TimeSpan CacheDuration { get; set; } = TimeSpan.Zero;
+
     internal void Validate()
     {
         if (string.IsNullOrWhiteSpace(Query))
@@ -93,6 +101,11 @@ public sealed class Db2HealthCheckOptions
         if (CommandTimeoutSeconds is <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(CommandTimeoutSeconds), CommandTimeoutSeconds, "Command timeout must be positive when provided.");
+        }
+
+        if (CacheDuration < TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(CacheDuration), CacheDuration, "Cache duration must be zero (disabled) or positive.");
         }
 
         if (ConnectionFactory is null && string.IsNullOrWhiteSpace(ConnectionString))

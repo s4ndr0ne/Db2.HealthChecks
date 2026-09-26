@@ -85,11 +85,15 @@ public static class HealthChecksExtensions
 
         options.Validate();
 
+        // Shared across probes: the infrastructure creates a new Db2HealthCheck per execution.
+        var cache = new Db2ProbeCache();
+
         return builder.Add(new HealthCheckRegistration(
             name,
             serviceProvider => new Db2HealthCheck(
                 options,
                 serviceProvider,
+                cache,
                 serviceProvider.GetService<ILogger<Db2HealthCheck>>()),
             options.FailureStatus,
             options.Tags));

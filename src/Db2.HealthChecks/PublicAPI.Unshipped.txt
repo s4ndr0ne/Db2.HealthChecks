@@ -1,1 +1,3 @@
 #nullable enable
+Db2.HealthChecks.Db2HealthCheckOptions.CacheDuration.get -> System.TimeSpan
+Db2.HealthChecks.Db2HealthCheckOptions.CacheDuration.set -> void
