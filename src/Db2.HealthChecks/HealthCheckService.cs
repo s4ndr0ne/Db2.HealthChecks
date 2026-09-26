@@ -38,6 +38,10 @@ internal sealed class Db2HealthCheck : IHealthCheck
             _logger?.LogDebug("Db2 health check '{Name}' completed successfully.", context.Registration.Name);
             return HealthCheckResult.Healthy(_options.HealthyDescription);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested && _options.Timeout != System.Threading.Timeout.InfiniteTimeSpan)
         {
             _logger?.LogWarning(ex, "Db2 health check '{Name}' timed out after {Timeout}.", context.Registration.Name, _options.Timeout);

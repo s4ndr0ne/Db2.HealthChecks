@@ -5,7 +5,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Testcontainers.Db2;
 
-namespace Db2.ConsoleApp;
+namespace Db2.HealthChecks.ConsoleApp;
 
 public class Program
 {

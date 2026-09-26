@@ -4,10 +4,11 @@ using Db2.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace Db2.Test;
+namespace Db2.HealthChecks.Tests;
 
 public class Db2HealthChecksExtensionsTests
 {
@@ -144,6 +145,37 @@ public class Db2HealthChecksExtensionsTests
 
         Assert.Equal(HealthStatus.Unhealthy, report.Status);
         Assert.Contains("Timed out", report.Entries["db2"].Description);
+        Assert.True(connection.WasDisposed);
+    }
+
+    [Fact]
+    public async Task AddDb2Check_PropagatesCallerCancellation()
+    {
+        var connection = new BlockingDbConnection();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddHealthChecks()
+            .AddDb2Check("db2", options =>
+            {
+                options.ConnectionFactory = _ => connection;
+                options.Timeout = Timeout.InfiniteTimeSpan;
+            });
+
+        await using var provider = services.BuildServiceProvider();
+        var registration = provider
+            .GetRequiredService<IOptions<HealthCheckServiceOptions>>()
+            .Value
+            .Registrations
+            .Single();
+        var healthCheck = registration.Factory(provider);
+        using var cancellationTokenSource = new CancellationTokenSource();
+        var checkTask = healthCheck.CheckHealthAsync(
+            new HealthCheckContext { Registration = registration },
+            cancellationTokenSource.Token);
+
+        cancellationTokenSource.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => checkTask);
         Assert.True(connection.WasDisposed);
     }
 

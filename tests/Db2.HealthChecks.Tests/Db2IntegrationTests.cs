@@ -5,7 +5,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Testcontainers.Db2;
 using Xunit;
 
-namespace Db2.Test;
+namespace Db2.HealthChecks.Tests;
 
 public sealed class Db2IntegrationTests : IAsyncLifetime
 {
