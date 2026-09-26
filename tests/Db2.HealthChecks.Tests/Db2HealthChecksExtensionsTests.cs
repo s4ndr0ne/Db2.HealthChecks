@@ -179,6 +179,47 @@ public class Db2HealthChecksExtensionsTests
         Assert.True(connection.WasDisposed);
     }
 
+    [Fact]
+    public async Task AddDb2Check_WithCacheDuration_ReusesResultWithoutNewProbe()
+    {
+        var factoryCalls = 0;
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddHealthChecks()
+            .AddDb2Check("db2", options =>
+            {
+                options.ConnectionFactory = _ =>
+                {
+                    factoryCalls++;
+                    return new SuccessfulDbConnection();
+                };
+                options.CacheDuration = TimeSpan.FromMinutes(1);
+            });
+
+        await using var provider = services.BuildServiceProvider();
+        var healthCheckService = provider.GetRequiredService<HealthCheckService>();
+
+        var first = await healthCheckService.CheckHealthAsync();
+        var second = await healthCheckService.CheckHealthAsync();
+
+        Assert.Equal(HealthStatus.Healthy, first.Status);
+        Assert.Equal(HealthStatus.Healthy, second.Status);
+        Assert.Equal(1, factoryCalls);
+    }
+
+    [Fact]
+    public void AddDb2Check_WithNegativeCacheDuration_Throws()
+    {
+        var services = new ServiceCollection();
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            services.AddHealthChecks().AddDb2Check("db2", options =>
+            {
+                options.ConnectionFactory = _ => new SuccessfulDbConnection();
+                options.CacheDuration = TimeSpan.FromSeconds(-1);
+            }));
+    }
+
 #pragma warning disable CS8764, CS8765 // Test doubles intentionally implement BCL provider contracts across TFMs.
     private class SuccessfulDbConnection : DbConnection
     {
