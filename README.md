@@ -1,5 +1,11 @@
 # Db2.HealthChecks
 
+[![.NET CI](https://github.com/s4ndr0ne/Db2.HealthChecks/actions/workflows/dotnet.yml/badge.svg)](https://github.com/s4ndr0ne/Db2.HealthChecks/actions/workflows/dotnet.yml)
+[![CodeQL](https://github.com/s4ndr0ne/Db2.HealthChecks/actions/workflows/codeql.yml/badge.svg)](https://github.com/s4ndr0ne/Db2.HealthChecks/actions/workflows/codeql.yml)
+[![NuGet](https://img.shields.io/nuget/v/s4ndr0ne.Db2.HealthChecks.svg)](https://www.nuget.org/packages/s4ndr0ne.Db2.HealthChecks)
+[![NuGet downloads](https://img.shields.io/nuget/dt/s4ndr0ne.Db2.HealthChecks.svg)](https://www.nuget.org/packages/s4ndr0ne.Db2.HealthChecks)
+[![License: MIT](https://img.shields.io/github/license/s4ndr0ne/Db2.HealthChecks.svg)](LICENSE)
+
 **Db2.HealthChecks** integrates IBM Db2 probes with `Microsoft.Extensions.Diagnostics.HealthChecks`.
 
 The package is designed to be portable and enterprise-friendly: it does not hard-code an OS-specific IBM driver dependency. Instead, it creates connections through an explicit connection factory, an ADO.NET `DbProviderFactory`, or the IBM Db2 provider loaded by the consuming application.
