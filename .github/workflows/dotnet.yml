@@ -33,7 +33,14 @@ jobs:
 
       - name: Install Db2 client native dependencies (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y libxml2 libaio1t64
+        run: |
+          sudo apt-get update
+          if apt-cache policy libxml2-16 | awk '$1 == "Candidate:" && $2 != "(none)" { found = 1 } END { exit !found }'; then
+            libxml2_package=libxml2-16
+          else
+            libxml2_package=libxml2
+          fi
+          sudo apt-get install -y "$libxml2_package" libaio1t64
 
       - name: Restore dependencies
         run: dotnet restore
