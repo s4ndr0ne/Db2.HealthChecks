@@ -37,7 +37,7 @@ Typical provider packages:
 
 ### Linux native dependencies
 
-When using `Net.IBM.Data.Db2-lnx`, the IBM native client also needs Linux shared libraries available at runtime. On Debian/Ubuntu-based images this typically means:
+When using `Net.IBM.Data.Db2-lnx`, the IBM native client also needs Linux shared libraries available at runtime. On Debian/Ubuntu-24-based images this typically means:
 
 ```bash
 apt-get update && apt-get install -y libxml2 libaio1t64
